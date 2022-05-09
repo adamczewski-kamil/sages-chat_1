@@ -1,4 +1,4 @@
-package pl.chat;
+package pl.chat.exception;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

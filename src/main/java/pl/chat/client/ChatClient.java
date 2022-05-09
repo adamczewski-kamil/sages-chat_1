@@ -1,6 +1,8 @@
-package pl.chat;
+package pl.chat.client;
 
 import lombok.extern.java.Log;
+import pl.chat.exception.GlobalExceptionHandler;
+import pl.chat.message.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -15,9 +17,9 @@ public class ChatClient {
 
     public ChatClient(String host, int port, String name) throws IOException {
         Socket socket = new Socket(host, port);
-        onText = text -> new MessageWriter(socket).write(name + ": " + text);
+        onText = text -> new MessageWriter(socket).write(ChatMessageBuilder.build(text, name));
         readFromSocket = () -> new MessageReader(socket, System.out::println, () -> {}).read();
-        readFromConsole = () -> new MessageReader(System.in, onText).read();
+        readFromConsole = () -> new ConsoleReader(System.in, onText).read();
     }
 
     public static void main(String[] args) throws IOException {
@@ -33,7 +35,7 @@ public class ChatClient {
         Thread consoleMessageReader = new Thread(readFromConsole);
         consoleMessageReader.setDaemon(true);
         consoleMessageReader.start();
-        log.info("Enter START to join the chat ...");
+        log.info("Enter $join to start the chat...");
     }
 }
 

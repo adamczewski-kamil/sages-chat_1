@@ -1,4 +1,7 @@
-package pl.chat;
+package pl.chat.server;
+
+import pl.chat.user.ChatUser;
+import pl.chat.user.ChatUsers;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,7 +14,7 @@ import java.util.logging.Logger;
 public class ChatServer {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private final ChatWorkers chatWorkers = new ChatWorkers();
+    private final ChatUsers chatUsers = new ChatUsers();
     private final ExecutorService executorService = Executors.newFixedThreadPool(1024);
 
     public static void main(String[] args) {
@@ -33,8 +36,9 @@ public class ChatServer {
         while (true) {
             Socket socket = serverSocket.accept();
             logger.log(Level.INFO, "New connection established...");
-            ChatWorker chatWorker = new ChatWorker(socket, chatWorkers);
-            chatWorkers.add(chatWorker);
+            logger.info("creating ChatUser...");
+            ChatUser chatWorker = new ChatUser(socket, chatUsers);
+            chatUsers.add(chatWorker);
             executorService.execute(chatWorker);
         }
     }
